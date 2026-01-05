@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   # --- 1. DATABASE SERVICE ---
+  # --- ggmu
   db_service:
     image: mysql:8.0
     container_name: db_${GROUP_NAME}
