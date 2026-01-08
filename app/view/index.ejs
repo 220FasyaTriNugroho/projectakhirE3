@@ -153,11 +153,11 @@
                 
                 <div class="bg-white/60 p-6 rounded-lg text-center w-3/4 backdrop-blur-sm shadow-xl border border-white/40">
                     <% if (user) { %>
-                        <p class="text-sm text-gray-800">Pemilik Buku:</p>
+                        <p class="text-sm text-gray-800">Writed By:</p>
                         <p class="text-lg font-bold text-[#8c6a3a] mb-2"><%= user.nickname %></p>
                         <a href="/logout" class="text-xs text-red-600 font-bold border-b border-red-600 pb-1">Kunci & Keluar</a>
                     <% } else { %>
-                        <p class="text-sm font-bold text-gray-700">Buku Terkunci</p>
+                        <p class="text-sm font-bold text-gray-700">"Everyone Diary's Book"</p>
                         <p class="text-xs text-gray-600 mb-3">Silakan identifikasi diri.</p>
                         <div class="flex gap-2 justify-center">
                             <button onclick="openModal('loginModal')" class="text-xs bg-[#2c3e50] text-white px-3 py-1 rounded">Login</button>
@@ -196,19 +196,19 @@
         <div class="modal-card w-[400px] p-8 text-center bg-[#fffaf0]">
             <span class="close-modal" onclick="closeModal('registerModal')">&times;</span>
             <div class="border-4 border-double border-[#8c6a3a] p-6">
-                <h2 class="text-2xl font-bold mb-1 text-[#5d4037]">Registrasi Anggota</h2>
-                <p class="text-xs text-gray-500 mb-6 tracking-widest uppercase">Perpustakaan E3</p>
+                <h2 class="text-2xl font-bold mb-1 text-[#5d4037]">Registration</h2>
+                <p class="text-xs text-gray-500 mb-6 tracking-widest uppercase">Virtual Diary E3</p>
                 <form action="/register" method="POST" class="space-y-4 text-left">
                     <div>
-                        <label class="text-xs font-bold text-[#8c6a3a]">NAMA PENA</label>
+                        <label class="text-xs font-bold text-[#8c6a3a]">THE WRITTER</label>
                         <input type="text" name="nickname" class="vintage-input" placeholder="Misal: Penyair Senja" required>
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-[#8c6a3a]">KODE AKSES (USERNAME)</label>
+                        <label class="text-xs font-bold text-[#8c6a3a]">NICKNAME</label>
                         <input type="text" name="username" class="vintage-input" required>
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-[#8c6a3a]">KATA SANDI</label>
+                        <label class="text-xs font-bold text-[#8c6a3a]">PASSWORD</label>
                         <input type="password" name="password" class="vintage-input" required>
                     </div>
                     <button type="submit" class="btn btn-gold w-full mt-4">Terbitkan Kartu</button>
@@ -221,7 +221,7 @@
         <div class="modal-card w-[350px] p-8 text-center bg-[#fffaf0]">
             <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
             <div class="border border-[#8c6a3a] p-6 outline outline-1 outline-offset-4 outline-[#8c6a3a]">
-                <h2 class="text-2xl font-bold mb-6 text-[#5d4037]">Akses Buku</h2>
+                <h2 class="text-2xl font-bold mb-6 text-[#5d4037]">Log In your Diary</h2>
                 <form action="/login" method="POST" class="space-y-6 text-left">
                     <div>
                         <input type="text" name="username" class="vintage-input text-center" placeholder="Username" required>
