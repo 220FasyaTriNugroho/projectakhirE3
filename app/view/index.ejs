@@ -181,16 +181,24 @@
         </div>
     </div>
 
-    <div class="ui-controls">
-        <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold hover:bg-gray-100" onclick="goPrev()">←</button>
-        <% if (user) { %>
-            <button class="btn btn-gold" onclick="openModal('writeModal')">✍ Tulis Cerita Baru</button>
-        <% } else { %>
-            <button class="bg-white px-6 py-2 rounded shadow-lg font-bold text-[#5d4037]" onclick="openModal('loginModal')">Login</button>
-            <button class="bg-[#2c3e50] text-white px-6 py-2 rounded shadow-lg font-bold" onclick="openModal('registerModal')">Daftar</button>
-        <% } %>
-        <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold hover:bg-gray-100" onclick="goNext()">→</button>
-    </div>
+<div class="ui-controls">
+    <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold hover:bg-gray-100" onclick="goPrev()">←</button>
+    
+    <% if (user) { %>
+        <button class="btn btn-gold" onclick="openModal('writeModal')">✍ Tulis Cerita Baru</button>
+        
+        <form action="/logout" method="POST" style="display:inline;">
+            <button class="bg-[#8b0000] text-[#f4ecd8] px-4 py-2 rounded shadow-lg font-bold border border-[#5d4037] hover:bg-red-900 transition font-serif">
+                Keluar
+            </button>
+        </form>
+    <% } else { %>
+        <button class="bg-white px-6 py-2 rounded shadow-lg font-bold text-[#5d4037]" onclick="openModal('loginModal')">Login</button>
+        <button class="bg-[#2c3e50] text-white px-6 py-2 rounded shadow-lg font-bold" onclick="openModal('registerModal')">Daftar</button>
+    <% } %>
+    
+    <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold hover:bg-gray-100" onclick="goNext()">→</button>
+</div>
 
     <div id="registerModal" class="modal">
         <div class="modal-card w-[400px] p-8 text-center bg-[#fffaf0]">

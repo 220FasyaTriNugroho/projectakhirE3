@@ -45,10 +45,17 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Logout
-router.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
+// Logout (Gunakan POST agar tidak dicache browser/proxy)
+router.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(err);
+            return res.redirect('/');
+        }
+        // Paksa hapus cookie session di browser
+        res.clearCookie('connect.sid');
+        res.redirect('/');
+    });
 });
 
 // --- CRUD FEATURE ---
