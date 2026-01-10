@@ -5,16 +5,33 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
     <style>
-        /* (Copy style dari create.ejs di atas agar sama persis) */
+        /* (Copy CSS Style yang SAMA PERSIS dari create.ejs di atas ke sini) */
         body { background: #3e2723; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; }
-        .card { display: flex; width: 900px; max-width: 95vw; height: 600px; background: #fffaf0; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .left { width: 50%; padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; }
-        .right { width: 50%; background: #2c2c2c; display: flex; align-items: center; justify-content: center; position: relative; }
-        .preview-page { width: 320px; height: 460px; padding: 2rem; border-radius: 5px 15px 15px 5px; box-shadow: 10px 10px 30px rgba(0,0,0,0.5); font-family: 'Courier Prime', monospace; }
+        .card { display: flex; width: 950px; max-width: 95vw; height: 600px; background: #fffaf0; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .left { width: 50%; padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; background: #fffaf0; z-index: 10; }
+        .right { width: 50%; background: #2c2c2c; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: inset 10px 0 20px rgba(0,0,0,0.2); }
+        
+        .preview-page { width: 360px; height: 500px; padding: 2.5rem; border-radius: 5px 15px 15px 5px; box-shadow: 10px 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: background 0.3s; }
+        
+        .lined-content {
+            font-family: 'Courier Prime', monospace; font-size: 0.95rem; line-height: 2rem; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 100% 2rem; background-attachment: local;
+            background-color: transparent; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; margin-top: 10px;
+        }
+
+        .preview-header { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px; margin-bottom: 0px; }
+        .preview-date { font-size: 0.7rem; opacity: 0.6; font-family: sans-serif; margin-bottom: 5px; }
+        .preview-name { font-size: 1.1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+
         .classic { background: #f4ecd8; color: #5d4037; }
         .midnight { background: #2c3e50; color: #eceff1; }
+        .midnight .lined-content { background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .midnight .preview-header { border-bottom: 1px solid rgba(255,255,255,0.2); }
         .lavender { background: #f3e5f5; color: #4a148c; }
-        .btn-gold { background: linear-gradient(to bottom, #d4af37, #aa8a29); color: white; padding: 0.8rem; width: 100%; font-weight: bold; border-radius: 5px; margin-top: 1rem; }
+        .lavender .lined-content { background-image: linear-gradient(rgba(74, 20, 140, 0.1) 1px, transparent 1px); }
+        .lavender .preview-header { border-bottom: 1px solid rgba(74, 20, 140, 0.2); }
+        .btn-gold { background: linear-gradient(to bottom, #d4af37, #aa8a29); color: white; padding: 0.8rem; width: 100%; font-weight: bold; border-radius: 5px; margin-top: 1rem; cursor: pointer; transition: 0.2s; }
     </style>
 </head>
 <body>
@@ -22,21 +39,28 @@
         <div class="left">
             <h2 class="text-2xl font-bold mb-4 text-[#5d4037]">Edit Cerita</h2>
             <form action="/update/<%= page.id %>" method="POST">
-                <label class="block text-sm font-bold text-[#8c6a3a] mb-2">ISI CERITA:</label>
-                <textarea name="content" id="contentInput" rows="12" class="w-full p-3 border border-gray-300 rounded font-[Courier] text-sm resize-none" required><%= page.content %></textarea>
+                <div class="flex-grow mb-2">
+                    <label class="block text-sm font-bold text-[#8c6a3a] mb-2">PERBAIKI TULISAN:</label>
+                    <textarea name="content" id="contentInput" rows="14" class="w-full p-3 border border-gray-300 rounded font-[Courier] text-sm resize-none focus:border-[#8c6a3a] outline-none h-80" required><%= page.content %></textarea>
+                </div>
                 <button type="submit" class="btn-gold">Simpan Perubahan</button>
             </form>
-            <a href="/" class="text-center text-xs text-gray-400 mt-4 hover:text-[#8c6a3a]">Batal & Kembali</a>
+            <a href="/" class="text-center text-xs text-gray-400 mt-4 hover:text-[#8c6a3a] no-underline">Batal & Kembali</a>
         </div>
+
         <div class="right">
+            <div class="absolute top-4 text-white/30 text-xs tracking-widest uppercase">Preview Mode</div>
+            
             <div id="previewPage" class="preview-page <%= page.page_style %>">
-                <div class="border-b border-current pb-2 mb-2 text-xs opacity-70 flex justify-between">
-                    <span>Mode Edit</span><span><%= user ? user.nickname : '' %></span>
+                <div class="preview-header">
+                    <div class="preview-date"><%= new Date(page.created_at).toLocaleDateString('id-ID') %></div>
+                    <div class="preview-name"><%= user ? user.nickname : '' %></div>
                 </div>
-                <div id="previewText" class="text-sm whitespace-pre-wrap"><%= page.content %></div>
+                <div id="previewText" class="lined-content"><%= page.content %></div>
             </div>
         </div>
     </div>
+
     <script>
         document.getElementById('contentInput').addEventListener('input', (e) => {
             document.getElementById('previewText').innerText = e.target.value;
