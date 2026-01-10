@@ -2,140 +2,47 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VirtualDiary E3 - Premium Edition</title>
+    <title>VirtualDiary E3</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Courier+Prime&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
     <style>
-        /* --- VARS & CORE --- */
-        :root {
-            --book-width: 420px; --book-height: 580px;
-            --classic-bg: #f4ecd8; --midnight-bg: #2c3e50; --lavender-bg: #f3e5f5;
-            --cover-grey: #8a9ea8; --cover-dark: #6b7f88;
-            --brass-light: #cfa76e; --brass-dark: #8c6a3a;
-        }
-        body {
-            background: radial-gradient(circle at center, #5d4037 0%, #3e2723 100%);
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; perspective: 2000px; overflow: hidden; font-family: 'Cinzel', serif;
-        }
-
-        /* --- BOOK STRUCTURE (Main) --- */
-        .book-container { position: relative; width: var(--book-width); height: var(--book-height); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: preserve-3d; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 10px; }
+        /* Paste Style CSS lengkap dari kode sebelumnya di sini agar tampilan konsisten */
+        :root { --book-width: 420px; --book-height: 580px; --classic-bg: #f4ecd8; --midnight-bg: #2c3e50; --lavender-bg: #f3e5f5; --cover-grey: #8a9ea8; --cover-dark: #6b7f88; --brass-light: #cfa76e; --brass-dark: #8c6a3a; }
+        body { background: radial-gradient(circle at center, #5d4037 0%, #3e2723 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; perspective: 2000px; overflow: hidden; font-family: 'Cinzel', serif; }
+        .book-container { position: relative; width: var(--book-width); height: var(--book-height); transition: transform 0.6s; transform-style: preserve-3d; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 10px; }
         .book-container.open { transform: translateX(50%); }
-        .page { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; border-radius: 0 12px 12px 0; }
-        .front, .back { position: absolute; width: 100%; height: 100%; top: 0; left: 0; backface-visibility: hidden; padding: 3rem 2.5rem; display: flex; flex-direction: column; box-shadow: inset 5px 0 15px rgba(0,0,0,0.1); background: #fff; }
+        .page { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s; cursor: pointer; border-radius: 0 12px 12px 0; }
+        .front, .back { position: absolute; width: 100%; height: 100%; top: 0; left: 0; backface-visibility: hidden; padding: 3rem 2.5rem; display: flex; flex-direction: column; background: #fff; box-shadow: inset 5px 0 15px rgba(0,0,0,0.1); }
         .back { transform: rotateY(180deg); border-radius: 12px 0 0 12px; box-shadow: inset -5px 0 15px rgba(0,0,0,0.1); }
         .page.flipped { transform: rotateY(-180deg); }
         
-        /* --- PAGE STYLES --- */
-        .page.cover .front { background: linear-gradient(135deg, var(--cover-grey), var(--cover-dark)); color: #333; border: 3px dashed rgba(0,0,0,0.2); align-items: center; justify-content: flex-start; padding-top: 5rem; }
+        /* Styles Cover & Page Colors (Sama seperti sebelumnya) */
+        .page.cover .front { background: linear-gradient(135deg, var(--cover-grey), var(--cover-dark)); color: #333; border: 3px dashed rgba(0,0,0,0.2); justify-content: flex-start; padding-top: 5rem; align-items: center; }
         .classic .front, .classic .back { background: var(--classic-bg); color: #5d4037; border-left: 5px solid #d7ccc8; }
         .midnight .front, .midnight .back { background: var(--midnight-bg); color: #eceff1; border-left: 5px solid #455a64; }
         .lavender .front, .lavender .back { background: var(--lavender-bg); color: #4a148c; border-left: 5px solid #e1bee7; }
-        .content-lines { background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px); background-size: 100% 2rem; line-height: 2rem; height: 100%; font-family: 'Courier Prime', monospace; overflow-y: auto; white-space: pre-wrap; font-size: 0.9rem;}
+        .content-lines { background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px); background-size: 100% 2rem; line-height: 2rem; height: 100%; font-family: 'Courier Prime', monospace; overflow-y: auto; white-space: pre-wrap; }
         
-        /* Lock & Ornaments */
-        .lock-strap { position: absolute; top: 50%; right: -15px; transform: translateY(-50%); width: 100px; height: 70px; background: var(--cover-dark); border-radius: 5px; border: 2px dashed rgba(0,0,0,0.3); box-shadow: 5px 0 10px rgba(0,0,0,0.3); z-index: 2; }
-        .brass-lock { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); width: 120px; height: 50px; z-index: 3; background: linear-gradient(to bottom, var(--brass-light), var(--brass-dark), var(--brass-light)); border-radius: 8px; border: 1px solid var(--brass-dark); box-shadow: 0 4px 8px rgba(0,0,0,0.4); display: flex; justify-content: space-evenly; align-items: center; }
+        /* Lock Decoration */
+        .lock-strap { position: absolute; top: 50%; right: -15px; transform: translateY(-50%); width: 100px; height: 70px; background: var(--cover-dark); border-radius: 5px; border: 2px dashed rgba(0,0,0,0.3); z-index: 2; }
+        .brass-lock { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); width: 120px; height: 50px; z-index: 3; background: linear-gradient(to bottom, var(--brass-light), var(--brass-dark), var(--brass-light)); border-radius: 8px; border: 1px solid var(--brass-dark); display: flex; justify-content: space-evenly; align-items: center; }
         .lock-dial { width: 20px; height: 35px; background: #333; color: white; display: flex; justify-content: center; align-items: center; font-family: 'Courier Prime', monospace; border-radius: 3px; }
 
-        /* --- MODAL STYLING (IMPROVED) --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s ease; }
-        .modal.show { opacity: 1; }
-        
-        /* Kartu Modal Base */
-        .modal-card { 
-            background: #fdf5e6; 
-            border-radius: 12px; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
-            border: 1px solid #d4af37;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Input Styling yang lebih estetik */
-        .vintage-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid #ccc;
-            padding: 10px 5px;
-            font-family: 'Courier Prime', monospace;
-            font-size: 1rem;
-            transition: all 0.3s;
-            color: #333;
-        }
-        .vintage-input:focus {
-            outline: none;
-            border-bottom: 2px solid #8c6a3a;
-            background: rgba(140, 106, 58, 0.1);
-        }
-        
-        /* Modal Split (Khusus Write & Edit) */
-        .modal-split { display: flex; width: 900px; max-width: 95vw; height: 600px; }
-        .modal-left { width: 50%; padding: 2.5rem; background: #fffaf0; display: flex; flex-direction: column; justify-content: center; }
-        .modal-right { 
-            width: 50%; 
-            background: #3e2723; /* Dark table background */
-            display: flex; justify-content: center; align-items: center; 
-            position: relative;
-            box-shadow: inset 10px 0 20px rgba(0,0,0,0.3);
-        }
-
-        /* Preview Page (Miniatur Halaman) */
-        .page-preview {
-            width: 320px; height: 460px;
-            background: var(--classic-bg);
-            padding: 2rem;
-            border-radius: 5px 15px 15px 5px;
-            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-            font-family: 'Courier Prime', monospace;
-            overflow: hidden;
-            position: relative;
-            transition: background 0.3s, color 0.3s;
-        }
-        .page-preview::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), transparent 10%); pointer-events: none; }
-        
-        /* Theme Classes untuk Preview */
-        .preview-classic { background: var(--classic-bg); color: #5d4037; }
-        .preview-midnight { background: var(--midnight-bg); color: #eceff1; }
-        .preview-midnight .content-lines-preview { background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); }
-        .preview-lavender { background: var(--lavender-bg); color: #4a148c; }
-
-        .content-lines-preview {
-            background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px); 
-            background-size: 100% 1.5rem; line-height: 1.5rem; 
-            height: 100%; width: 100%;
-            word-wrap: break-word; white-space: pre-wrap;
-            font-size: 0.85rem;
-        }
-
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #8c6a3a; z-index: 50; transition: transform 0.2s; }
-        .close-modal:hover { transform: scale(1.1); color: #5d4037; }
-
-        /* Buttons */
-        .btn { padding: 0.8rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: 'Cinzel', serif; letter-spacing: 1px; }
-        .btn-gold { background: linear-gradient(to bottom, #d4af37, #aa8a29); color: white; border: 1px solid #8c6a3a; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(212, 175, 55, 0.4); }
         .ui-controls { position: fixed; bottom: 2rem; display: flex; gap: 1rem; z-index: 200; }
     </style>
 </head>
 <body>
-
     <div class="book-container" id="book">
-        
         <% pages.reverse().forEach((page, index) => { %>
             <div class="page <%= page.page_style %>" id="p<%= index + 1 %>">
                 <div class="front">
-                    <div style="font-size: 0.8rem; opacity: 0.6; font-family: 'Cinzel', serif;">
-                        <%= new Date(page.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
-                    </div>
-                    <h2 class="text-xl font-bold mb-2 mt-1 font-serif"><%= page.nickname %></h2>
+                    <div style="font-size: 0.8rem; opacity: 0.6;"><%= new Date(page.created_at).toLocaleDateString('id-ID') %></div>
+                    <h2 class="text-xl font-bold mb-2 mt-1"><%= page.nickname %></h2>
                     <div class="content-lines"><%= page.content %></div>
                     
                     <% if (user && user.id === page.author_id) { %>
                         <div class="mt-auto flex justify-end gap-2 opacity-100 z-50 pt-4 border-t border-black/10">
-                            <button type="button" onclick="openEditModal('<%= page.id %>', `<%= page.content %>`, '<%= page.page_style %>')" class="text-blue-600 text-xs font-bold hover:underline">EDIT</button>
+                            <a href="/edit/<%= page.id %>" class="text-blue-600 text-xs font-bold hover:underline">EDIT</a>
                             <form action="/delete/<%= page.id %>" method="POST" style="display:inline;">
                                 <button class="text-red-600 text-xs font-bold hover:underline">HAPUS</button>
                             </form>
@@ -148,260 +55,45 @@
 
         <div class="page cover" id="p0">
             <div class="front">
-                <div style="font-size: 1.6rem; font-weight: bold; color: #2c3e50; text-align: center; text-shadow: 1px 1px 0 rgba(255,255,255,0.2);">VIRTUAL DIARY</div>
-                <div style="font-size: 0.8rem; letter-spacing: 3px; text-align: center; margin-bottom: 2rem; opacity: 0.8;">COLLECTION OF MEMORIES</div>
-                
-                <div class="bg-white/60 p-6 rounded-lg text-center w-3/4 backdrop-blur-sm shadow-xl border border-white/40">
+                <div style="font-size: 1.6rem; font-weight: bold; text-align: center;">VIRTUAL DIARY</div>
+                <div style="font-size: 0.8rem; letter-spacing: 3px; text-align: center; margin-bottom: 2rem;">GROUP E3</div>
+                <div class="bg-white/60 p-6 rounded-lg text-center w-3/4 backdrop-blur-sm">
                     <% if (user) { %>
-                        <p class="text-sm text-gray-800">Writed By:</p>
-                        <p class="text-lg font-bold text-[#8c6a3a] mb-2"><%= user.nickname %></p>
-                        <a href="/logout" class="text-xs text-red-600 font-bold border-b border-red-600 pb-1">Kunci & Keluar</a>
+                        <p class="text-sm">Writer: <b><%= user.nickname %></b></p>
+                        <form action="/logout" method="POST"><button class="text-xs text-red-600 font-bold underline">Logout</button></form>
                     <% } else { %>
-                        <p class="text-sm font-bold text-gray-700">"Everyone Diary's Book"</p>
-                        <p class="text-xs text-gray-600 mb-3">Silakan identifikasi diri.</p>
-                        <div class="flex gap-2 justify-center">
-                            <button onclick="openModal('loginModal')" class="text-xs bg-[#2c3e50] text-white px-3 py-1 rounded">Login</button>
-                        </div>
+                        <p class="text-sm font-bold">"Everyone Diary's Book"</p>
+                        <a href="/login" class="text-xs bg-[#2c3e50] text-white px-3 py-1 rounded inline-block mt-2">Login</a>
                     <% } %>
                 </div>
-
                 <div class="lock-strap"></div>
                 <div class="brass-lock">
-                    <div class="lock-dial"><%= user ? 'O' : '0' %></div>
-                    <div class="lock-dial"><%= user ? 'P' : '0' %></div>
-                    <div class="lock-dial"><%= user ? 'N' : '0' %></div>
+                    <div class="lock-dial"><%= user ? 'O' : '0' %></div><div class="lock-dial"><%= user ? 'P' : '0' %></div><div class="lock-dial"><%= user ? 'N' : '0' %></div>
                 </div>
             </div>
-            <div class="back bg-gray-100 flex flex-col justify-center items-center text-center p-8">
-                <h2 class="text-2xl font-bold mb-2 font-serif text-[#5d4037]">Kelompok E3</h2>
-                <div class="w-16 h-1 bg-[#8c6a3a] mb-4"></div>
-                <p class="text-sm italic text-gray-600">"Setiap cerita berhak untuk dikenang selamanya dalam kode biner."</p>
-                <div class="mt-auto text-xs text-gray-400">v1.2 Premium Edition</div>
-            </div>
+            <div class="back bg-gray-100"></div>
         </div>
     </div>
 
-<div class="ui-controls">
-    <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold hover:bg-gray-100" onclick="goPrev()">←</button>
-    
-    <% if (user) { %>
-        <button class="btn btn-gold" onclick="openModal('writeModal')">✍ Tulis Cerita Baru</button>
-        
-        <form action="/logout" method="POST" style="display:inline;">
-            <button class="bg-[#8b0000] text-[#f4ecd8] px-4 py-2 rounded shadow-lg font-bold border border-[#5d4037] hover:bg-red-900 transition font-serif">
-                Keluar
-            </button>
-        </form>
-    <% } else { %>
-        <button class="bg-white px-6 py-2 rounded shadow-lg font-bold text-[#5d4037]" onclick="openModal('loginModal')">Login</button>
-        <button class="bg-[#2c3e50] text-white px-6 py-2 rounded shadow-lg font-bold" onclick="openModal('registerModal')">Daftar</button>
-    <% } %>
-    
-    <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold hover:bg-gray-100" onclick="goNext()">→</button>
-</div>
-
-    <div id="registerModal" class="modal">
-        <div class="modal-card w-[400px] p-8 text-center bg-[#fffaf0]">
-            <span class="close-modal" onclick="closeModal('registerModal')">&times;</span>
-            <div class="border-4 border-double border-[#8c6a3a] p-6">
-                <h2 class="text-2xl font-bold mb-1 text-[#5d4037]">Registration</h2>
-                <p class="text-xs text-gray-500 mb-6 tracking-widest uppercase">Virtual Diary E3</p>
-                <form action="/register" method="POST" class="space-y-4 text-left">
-                    <div>
-                        <label class="text-xs font-bold text-[#8c6a3a]">THE WRITTER</label>
-                        <input type="text" name="nickname" class="vintage-input" placeholder="Misal: Penyair Senja" required>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#8c6a3a]">NICKNAME</label>
-                        <input type="text" name="username" class="vintage-input" required>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#8c6a3a]">PASSWORD</label>
-                        <input type="password" name="password" class="vintage-input" required>
-                    </div>
-                    <button type="submit" class="btn btn-gold w-full mt-4">Terbitkan Kartu</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="loginModal" class="modal">
-        <div class="modal-card w-[350px] p-8 text-center bg-[#fffaf0]">
-            <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
-            <div class="border border-[#8c6a3a] p-6 outline outline-1 outline-offset-4 outline-[#8c6a3a]">
-                <h2 class="text-2xl font-bold mb-6 text-[#5d4037]">Log In your Diary</h2>
-                <form action="/login" method="POST" class="space-y-6 text-left">
-                    <div>
-                        <input type="text" name="username" class="vintage-input text-center" placeholder="Username" required>
-                    </div>
-                    <div>
-                        <input type="password" name="password" class="vintage-input text-center" placeholder="Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-gold w-full">Buka Kunci</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="writeModal" class="modal">
-        <div class="modal-card modal-split">
-            <span class="close-modal" onclick="closeModal('writeModal')">&times;</span>
-            
-            <div class="modal-left">
-                <h2 class="text-2xl font-bold mb-4 text-[#5d4037]">Halaman Baru</h2>
-                <form action="/add" method="POST" id="addForm">
-                    <div class="mb-6">
-                        <label class="block text-sm font-bold text-[#8c6a3a] mb-2">PILIH TEMA KERTAS:</label>
-                        <select name="style" id="themeSelect" class="w-full p-2 border border-[#8c6a3a] rounded bg-white font-serif focus:ring-2 focus:ring-[#d4af37] outline-none">
-                            <option value="classic">Classic (Kertas Tua)</option>
-                            <option value="midnight">Midnight (Biru Gelap)</option>
-                            <option value="lavender">Lavender (Ungu Halus)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-4 flex-grow">
-                        <label class="block text-sm font-bold text-[#8c6a3a] mb-2">ISI CERITA:</label>
-                        <textarea name="content" id="contentInput" rows="10" class="w-full p-3 border border-gray-300 rounded bg-white font-[Courier] text-sm focus:border-[#8c6a3a] outline-none resize-none" placeholder="Mulai menulis ceritamu di sini..." required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-gold w-full">Simpan ke Buku</button>
-                </form>
-            </div>
-
-            <div class="modal-right">
-                <div class="text-white/50 text-xs absolute top-4 uppercase tracking-widest">Live Preview</div>
-                
-                <div id="previewPage" class="page-preview preview-classic">
-                    <div class="flex justify-between items-center mb-4 opacity-70 border-b border-current pb-2">
-                        <span class="text-xs font-serif"><%= new Date().toLocaleDateString('id-ID') %></span>
-                        <span class="text-xs font-bold"><%= user ? user.nickname : 'Penulis' %></span>
-                    </div>
-                    <div id="previewText" class="content-lines-preview">
-                        Tulisanmu akan muncul di sini...
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="editModal" class="modal">
-        <div class="modal-card modal-split">
-            <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
-            <div class="modal-left">
-                <h2 class="text-2xl font-bold mb-4 text-[#5d4037]">Edit Cerita</h2>
-                <form id="editForm" method="POST">
-                    <div class="mb-4 flex-grow">
-                        <label class="block text-sm font-bold text-[#8c6a3a] mb-2">PERBAIKI TULISAN:</label>
-                        <textarea name="content" id="editContentInput" rows="12" class="w-full p-3 border border-gray-300 rounded bg-white font-[Courier] text-sm focus:border-[#8c6a3a] outline-none resize-none" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-gold w-full">Simpan Perubahan</button>
-                </form>
-            </div>
-            <div class="modal-right">
-                <div class="text-white/50 text-xs absolute top-4 uppercase tracking-widest">Preview Perubahan</div>
-                <div id="editPreviewPage" class="page-preview preview-classic">
-                    <div class="flex justify-between items-center mb-4 opacity-70 border-b border-current pb-2">
-                        <span class="text-xs font-serif">Mode Edit</span>
-                        <span class="text-xs font-bold"><%= user ? user.nickname : '' %></span>
-                    </div>
-                    <div id="editPreviewText" class="content-lines-preview"></div>
-                </div>
-            </div>
-        </div>
+    <div class="ui-controls">
+        <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold" onclick="goPrev()">←</button>
+        <% if (user) { %>
+            <a href="/add" class="bg-gradient-to-b from-[#d4af37] to-[#aa8a29] text-white border border-[#8c6a3a] px-4 py-2 rounded shadow-lg font-bold no-underline flex items-center">✍ Tulis Baru</a>
+        <% } else { %>
+            <a href="/login" class="bg-white px-6 py-2 rounded shadow-lg font-bold text-[#5d4037] no-underline flex items-center">Login</a>
+            <a href="/register" class="bg-[#2c3e50] text-white px-6 py-2 rounded shadow-lg font-bold no-underline flex items-center">Daftar</a>
+        <% } %>
+        <button class="bg-white px-4 py-2 rounded-full shadow-lg font-bold" onclick="goNext()">→</button>
     </div>
 
     <script>
-        // --- MODAL LOGIC ---
-        function openModal(id) { 
-            const modal = document.getElementById(id);
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('show'), 10); // Fade in effect
-        }
-        function closeModal(id) { 
-            const modal = document.getElementById(id);
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
-        
-        // --- EDIT LOGIC (Modified to support Preview) ---
-        function openEditModal(id, content, style) {
-            document.getElementById('editForm').action = '/update/' + id;
-            
-            // Set Input
-            const input = document.getElementById('editContentInput');
-            input.value = content;
-            
-            // Set Preview Text
-            const previewText = document.getElementById('editPreviewText');
-            previewText.innerText = content;
-
-            // Set Preview Style (sesuai data asli)
-            const previewPage = document.getElementById('editPreviewPage');
-            previewPage.className = `page-preview preview-${style}`;
-
-            openModal('editModal');
-        }
-
-        // --- LIVE PREVIEW LOGIC (WRITE MODAL) ---
-        const themeSelect = document.getElementById('themeSelect');
-        const contentInput = document.getElementById('contentInput');
-        const previewPage = document.getElementById('previewPage');
-        const previewText = document.getElementById('previewText');
-
-        // Ganti Tema Preview
-        themeSelect.addEventListener('change', (e) => {
-            const theme = e.target.value;
-            previewPage.className = `page-preview preview-${theme}`;
-        });
-
-        // Ganti Teks Preview (Real-time)
-        contentInput.addEventListener('input', (e) => {
-            previewText.innerText = e.target.value || "Tulisanmu akan muncul di sini...";
-        });
-
-        // --- LIVE PREVIEW LOGIC (EDIT MODAL) ---
-        const editInput = document.getElementById('editContentInput');
-        const editPreviewText = document.getElementById('editPreviewText');
-        
-        editInput.addEventListener('input', (e) => {
-            editPreviewText.innerText = e.target.value;
-        });
-
-        // --- FLIPBOOK LOGIC ---
+        // LOGIKA FLIPBOOK (Sama seperti sebelumnya)
         const book = document.getElementById('book');
         const pages = Array.from(document.querySelectorAll('.page')).reverse();
-        let currentLocation = 0;
-        let totalPages = pages.length;
-
-        function goNext() {
-            if (currentLocation < totalPages) {
-                if (currentLocation === 0) book.classList.add('open');
-                const page = pages[currentLocation];
-                page.classList.add('flipped');
-                page.style.zIndex = currentLocation + 1;
-                currentLocation++;
-            }
-        }
-
-        function goPrev() {
-            if (currentLocation > 0) {
-                currentLocation--;
-                const page = pages[currentLocation];
-                page.classList.remove('flipped');
-                page.style.zIndex = totalPages - currentLocation;
-                if (currentLocation === 0) book.classList.remove('open');
-            }
-        }
-
-        pages.forEach((page) => {
-            page.addEventListener('click', (e) => {
-                if(['BUTTON', 'TEXTAREA', 'INPUT', 'SELECT'].includes(e.target.tagName)) return; 
-                if (!page.classList.contains('flipped')) goNext(); else goPrev();
-            });
-        });
-        
-        // Close modal when clicking outside
-        window.onclick = function(e) { if(e.target.classList.contains('modal')) closeModal(e.target.id); }
+        let currentLocation = 0; let totalPages = pages.length;
+        function goNext() { if (currentLocation < totalPages) { if (currentLocation === 0) book.classList.add('open'); pages[currentLocation].classList.add('flipped'); pages[currentLocation].style.zIndex = currentLocation + 1; currentLocation++; } }
+        function goPrev() { if (currentLocation > 0) { currentLocation--; pages[currentLocation].classList.remove('flipped'); pages[currentLocation].style.zIndex = totalPages - currentLocation; if (currentLocation === 0) book.classList.remove('open'); } }
+        pages.forEach((page) => { page.addEventListener('click', (e) => { if(['A', 'BUTTON'].includes(e.target.tagName)) return; if (!page.classList.contains('flipped')) goNext(); else goPrev(); }); });
     </script>
 </body>
 </html>

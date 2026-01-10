@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Edit Cerita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
+    <style>
+        /* (Copy style dari create.ejs di atas agar sama persis) */
+        body { background: #3e2723; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; }
+        .card { display: flex; width: 900px; max-width: 95vw; height: 600px; background: #fffaf0; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .left { width: 50%; padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+        .right { width: 50%; background: #2c2c2c; display: flex; align-items: center; justify-content: center; position: relative; }
+        .preview-page { width: 320px; height: 460px; padding: 2rem; border-radius: 5px 15px 15px 5px; box-shadow: 10px 10px 30px rgba(0,0,0,0.5); font-family: 'Courier Prime', monospace; }
+        .classic { background: #f4ecd8; color: #5d4037; }
+        .midnight { background: #2c3e50; color: #eceff1; }
+        .lavender { background: #f3e5f5; color: #4a148c; }
+        .btn-gold { background: linear-gradient(to bottom, #d4af37, #aa8a29); color: white; padding: 0.8rem; width: 100%; font-weight: bold; border-radius: 5px; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="left">
+            <h2 class="text-2xl font-bold mb-4 text-[#5d4037]">Edit Cerita</h2>
+            <form action="/update/<%= page.id %>" method="POST">
+                <label class="block text-sm font-bold text-[#8c6a3a] mb-2">ISI CERITA:</label>
+                <textarea name="content" id="contentInput" rows="12" class="w-full p-3 border border-gray-300 rounded font-[Courier] text-sm resize-none" required><%= page.content %></textarea>
+                <button type="submit" class="btn-gold">Simpan Perubahan</button>
+            </form>
+            <a href="/" class="text-center text-xs text-gray-400 mt-4 hover:text-[#8c6a3a]">Batal & Kembali</a>
+        </div>
+        <div class="right">
+            <div id="previewPage" class="preview-page <%= page.page_style %>">
+                <div class="border-b border-current pb-2 mb-2 text-xs opacity-70 flex justify-between">
+                    <span>Mode Edit</span><span><%= user ? user.nickname : '' %></span>
+                </div>
+                <div id="previewText" class="text-sm whitespace-pre-wrap"><%= page.content %></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('contentInput').addEventListener('input', (e) => {
+            document.getElementById('previewText').innerText = e.target.value;
+        });
+    </script>
+</body>
+</html>

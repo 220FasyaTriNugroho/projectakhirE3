@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Daftar - VirtualDiary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
+    <style>
+        body { background: radial-gradient(circle at center, #5d4037 0%, #3e2723 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; }
+        .vintage-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid #ccc; padding: 10px; font-family: 'Courier Prime', monospace; outline: none; }
+        .btn-gold { background: linear-gradient(to bottom, #d4af37, #aa8a29); color: white; border: 1px solid #8c6a3a; padding: 0.8rem; width: 100%; font-weight: bold; margin-top: 1rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="bg-[#fffaf0] p-8 rounded-xl shadow-2xl w-[400px] border border-[#d4af37]">
+        <div class="border-4 border-double border-[#8c6a3a] p-6 text-center">
+            <h2 class="text-2xl font-bold mb-1 text-[#5d4037]">Registrasi</h2>
+            <p class="text-xs text-gray-500 mb-6 tracking-widest uppercase">Perpustakaan E3</p>
+            <form action="/register" method="POST" class="space-y-4 text-left">
+                <div>
+                    <label class="text-xs font-bold text-[#8c6a3a]">NAMA PENA</label>
+                    <input type="text" name="nickname" class="vintage-input" placeholder="Misal: Penyair Senja" required>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-[#8c6a3a]">USERNAME</label>
+                    <input type="text" name="username" class="vintage-input" required>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-[#8c6a3a]">PASSWORD</label>
+                    <input type="password" name="password" class="vintage-input" required>
+                </div>
+                <button type="submit" class="btn-gold">Terbitkan Kartu</button>
+            </form>
+            <div class="mt-4 text-xs">
+                <a href="/login" class="text-gray-500 hover:text-[#8c6a3a]">Sudah punya kartu? Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

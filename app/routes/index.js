@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 
-// (R) READ: Tampilkan Halaman
+// --- (R) READ: HALAMAN UTAMA (BUKU) ---
 router.get('/', async (req, res) => {
     try {
         const [rows] = await db.query(`
@@ -13,26 +13,19 @@ router.get('/', async (req, res) => {
         `);
         res.render('index', { pages: rows });
     } catch (err) {
-        res.status(500).send("Error Database: " + err.message);
+        res.status(500).send("Error: " + err.message);
     }
 });
 
-// --- AUTHENTICATION ---
+// --- AUTHENTICATION ROUTES ---
 
-// Register
-router.post('/register', async (req, res) => {
-    const { nickname, username, password } = req.body;
-    try {
-        await db.query('INSERT INTO authors (nickname, username, password) VALUES (?, ?, ?)', 
-            [nickname, username, password]);
-        // Auto login setelah register (opsional), di sini kita redirect aja
-        res.redirect('/');
-    } catch (err) {
-        res.send(`<script>alert('Gagal daftar! Username mungkin sudah dipakai.'); window.location='/';</script>`);
-    }
+// 1. Halaman Login (GET)
+router.get('/login', (req, res) => {
+    if (req.session.user) return res.redirect('/');
+    res.render('login'); // Akan membuka view/login.ejs
 });
 
-// Login
+// Proses Login (POST)
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const [users] = await db.query('SELECT * FROM authors WHERE username = ? AND password = ?', [username, password]);
@@ -41,62 +34,90 @@ router.post('/login', async (req, res) => {
         req.session.user = users[0];
         res.redirect('/');
     } else {
-        res.send(`<script>alert('Username atau Password salah!'); window.location='/';</script>`);
+        // Bisa ditambahkan error handling lebih bagus nanti
+        res.send(`<script>alert('Login Gagal!'); window.location='/login';</script>`);
     }
 });
 
-// Logout (Gunakan POST agar tidak dicache browser/proxy)
+// 2. Halaman Register (GET)
+router.get('/register', (req, res) => {
+    if (req.session.user) return res.redirect('/');
+    res.render('register'); // Akan membuka view/register.ejs
+});
+
+// Proses Register (POST)
+router.post('/register', async (req, res) => {
+    const { nickname, username, password } = req.body;
+    try {
+        await db.query('INSERT INTO authors (nickname, username, password) VALUES (?, ?, ?)', 
+            [nickname, username, password]);
+        res.redirect('/login');
+    } catch (err) {
+        res.send(`<script>alert('Username sudah dipakai!'); window.location='/register';</script>`);
+    }
+});
+
+// Logout (POST)
 router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
-        if (err) {
-            console.log(err);
-            return res.redirect('/');
-        }
-        // Paksa hapus cookie session di browser
         res.clearCookie('connect.sid');
-        res.redirect('/');
+        res.redirect('/login');
     });
 });
 
-// --- CRUD FEATURE ---
+// --- CRUD ROUTES ---
 
-// (C) CREATE: Tambah Halaman
+// 3. Halaman Tambah Cerita (GET)
+router.get('/add', (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    res.render('create'); // Akan membuka view/create.ejs
+});
+
+// Proses Tambah (POST)
 router.post('/add', async (req, res) => {
-    if (!req.session.user) return res.status(403).send("Harus Login!");
-    
+    if (!req.session.user) return res.redirect('/login');
     const { content, style } = req.body;
     await db.query('INSERT INTO diary_pages (author_id, content, page_style) VALUES (?, ?, ?)', 
         [req.session.user.id, content, style]);
     res.redirect('/');
 });
 
-// (U) UPDATE: Edit Halaman
-router.post('/update/:id', async (req, res) => {
-    if (!req.session.user) return res.redirect('/');
-
-    const pageId = req.params.id;
-    const newContent = req.body.content;
-    const userId = req.session.user.id;
-
-    // Cek apakah halaman ini milik user yang sedang login
-    const [page] = await db.query('SELECT * FROM diary_pages WHERE id = ?', [pageId]);
+// 4. Halaman Edit (GET)
+router.get('/edit/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
     
-    if (page.length > 0 && page[0].author_id === userId) {
-        await db.query('UPDATE diary_pages SET content = ? WHERE id = ?', [newContent, pageId]);
+    const pageId = req.params.id;
+    const [page] = await db.query('SELECT * FROM diary_pages WHERE id = ?', [pageId]);
+
+    // Validasi: Cek kepemilikan
+    if (page.length === 0 || page[0].author_id !== req.session.user.id) {
+        return res.redirect('/');
+    }
+
+    res.render('edit', { page: page[0] }); // Akan membuka view/edit.ejs
+});
+
+// Proses Update (POST)
+router.post('/update/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    const pageId = req.params.id;
+    const { content } = req.body;
+    
+    // Validasi double check
+    const [page] = await db.query('SELECT * FROM diary_pages WHERE id = ?', [pageId]);
+    if (page.length > 0 && page[0].author_id === req.session.user.id) {
+        await db.query('UPDATE diary_pages SET content = ? WHERE id = ?', [content, pageId]);
     }
     res.redirect('/');
 });
 
-// (D) DELETE: Hapus Halaman
+// Proses Delete (POST)
 router.post('/delete/:id', async (req, res) => {
-    if (!req.session.user) return res.redirect('/');
-
+    if (!req.session.user) return res.redirect('/login');
     const pageId = req.params.id;
-    const userId = req.session.user.id;
-
-    const [page] = await db.query('SELECT * FROM diary_pages WHERE id = ?', [pageId]);
     
-    if (page.length > 0 && page[0].author_id === userId) {
+    const [page] = await db.query('SELECT * FROM diary_pages WHERE id = ?', [pageId]);
+    if (page.length > 0 && page[0].author_id === req.session.user.id) {
         await db.query('DELETE FROM diary_pages WHERE id = ?', [pageId]);
     }
     res.redirect('/');

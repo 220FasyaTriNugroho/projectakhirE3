@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Login - VirtualDiary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Courier+Prime&display=swap" rel="stylesheet">
+    <style>
+        body { background: radial-gradient(circle at center, #5d4037 0%, #3e2723 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; }
+        .vintage-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid #ccc; padding: 10px; font-family: 'Courier Prime', monospace; outline: none; transition: 0.3s; }
+        .vintage-input:focus { border-bottom-color: #8c6a3a; background: rgba(140, 106, 58, 0.1); }
+        .btn-gold { background: linear-gradient(to bottom, #d4af37, #aa8a29); color: white; border: 1px solid #8c6a3a; padding: 0.8rem; width: 100%; font-weight: bold; margin-top: 1rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="bg-[#fffaf0] p-8 rounded-xl shadow-2xl w-[350px] border border-[#d4af37]">
+        <div class="border border-[#8c6a3a] p-6 outline outline-1 outline-offset-4 outline-[#8c6a3a] text-center">
+            <h2 class="text-2xl font-bold mb-6 text-[#5d4037]">Login Akses Buku</h2>
+            <form action="/login" method="POST" class="space-y-6 text-left">
+                <input type="text" name="username" class="vintage-input text-center" placeholder="Username" required>
+                <input type="password" name="password" class="vintage-input text-center" placeholder="Password" required>
+                <button type="submit" class="btn-gold">Buka Kunci</button>
+            </form>
+            <div class="mt-4 text-xs text-center">
+                <a href="/" class="text-gray-500 hover:text-[#8c6a3a]">← Kembali ke Buku</a> | 
+                <a href="/register" class="text-gray-500 hover:text-[#8c6a3a]">Daftar</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
