@@ -20,4 +20,4 @@ INSERT INTO authors (nickname, username, password) VALUES ('Penulis Gabut', 'use
 INSERT INTO diary_pages (author_id, content, page_style) VALUES (1, 'Hari ini aku belajar Docker...', 'classic');
 
 INSERT INTO authors (nickname, username, password) VALUES ('Akmal', 'akmal', 'akmal123');
-INSERT INTO diary_pages (author_id, content, page_style) VALUES (2, 'Diary Pertamaku', 'midnight');
+INSERT INTO diary_pages (author_id, content, page_style) VALUES (7, 'Diary Pertamaku', 'midnight');
