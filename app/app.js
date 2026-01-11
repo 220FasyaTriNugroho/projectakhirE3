@@ -1,176 +1,46 @@
-const express = require("express");
-const mysql = require("mysql2");
-const bodyParser = require("body-parser");
+const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const dotenv = require('dotenv');
+const path = require('path');
 
+dotenv.config();
 const app = express();
+const PORT = 3000;
+
+// Middleware Parsing
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Database connection pool
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
 });
 
-// Test database connection
-db.query("SELECT 1", (err) => {
-  if (err) {
-    console.error("❌ DB connection failed:", err);
-  } else {
-    console.log("✅ Connected to MySQL");
-  }
+// Konfigurasi Session
+app.use(session({
+    secret: 'rahasia-kelompok-e3-super-aman', 
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 3600000 } // Login valid selama 1 jam
+}));
+
+// Middleware Global User (agar data user bisa dibaca di semua file EJS)
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
 });
 
-// ==================== ROUTES ====================
+// View Engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'view'));
 
-// Root endpoint
-app.get("/", (req, res) => {
-  res.json({
-    message: "VirtualDiary API",
-    version: "1.0.0",
-    endpoints: {
-      health: "/health",
-      users: "/api/users",
-      diaries: "/api/diaries",
-      create_user: "/api/users [POST]",
-      create_diary: "/api/diaries [POST]"
-    }
-  });
-});
+// Routes
+const indexRouter = require('./routes/index');
+app.use('/', indexRouter);
 
-// Health check
-app.get("/health", (req, res) => {
-  res.json({
-    status: "healthy",
-    database: "connected",
-    timestamp: new Date().toISOString()
-  });
-});
-
-// ============ USER ROUTES ============
-// Get all users
-app.get("/api/users", (req, res) => {
-  db.query("SELECT id, username, email, created_at FROM users", (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json({
-      count: results.length,
-      users: results
-    });
-  });
-});
-
-// Create new user
-app.post("/api/users", (req, res) => {
-  const { username, email, password } = req.body;
-  
-  if (!username || !email || !password) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  db.query(
-    "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-    [username, email, password],
-    (err, results) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Failed to create user" });
-      }
-      res.status(201).json({
-        message: "User created successfully",
-        userId: results.insertId
-      });
-    }
-  );
-});
-
-// ============ DIARY ROUTES ============
-// Get all diaries
-app.get("/api/diaries", (req, res) => {
-  db.query(`
-    SELECT d.id, d.title, d.content, d.user_id, d.created_at, u.username 
-    FROM diaries d 
-    LEFT JOIN users u ON d.user_id = u.id
-    ORDER BY d.created_at DESC
-  `, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json({
-      count: results.length,
-      diaries: results
-    });
-  });
-});
-
-// Create new diary
-app.post("/api/diaries", (req, res) => {
-  const { title, content, user_id } = req.body;
-  
-  if (!title || !content || !user_id) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  db.query(
-    "INSERT INTO diaries (title, content, user_id) VALUES (?, ?, ?)",
-    [title, content, user_id],
-    (err, results) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Failed to create diary" });
-      }
-      res.status(201).json({
-        message: "Diary created successfully",
-        diaryId: results.insertId
-      });
-    }
-  );
-});
-
-// ============ CREATE TABLES IF NOT EXISTS ============
-const createTables = () => {
-  const usersTable = `
-    CREATE TABLE IF NOT EXISTS users (
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      username VARCHAR(50) UNIQUE NOT NULL,
-      email VARCHAR(100) UNIQUE NOT NULL,
-      password VARCHAR(255) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `;
-
-  const diariesTable = `
-    CREATE TABLE IF NOT EXISTS diaries (
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      title VARCHAR(255) NOT NULL,
-      content TEXT NOT NULL,
-      user_id INT,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    )
-  `;
-
-  db.query(usersTable, (err) => {
-    if (err) console.error("Error creating users table:", err);
-    else console.log("✅ Users table ready");
-  });
-
-  db.query(diariesTable, (err) => {
-    if (err) console.error("Error creating diaries table:", err);
-    else console.log("✅ Diaries table ready");
-  });
-};
-
-// Create tables on startup
-createTables();
-
-// Start server
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+app.listen(PORT, () => {
+    console.log(`VirtualDiary E3 Running on Port ${PORT}`);
 });

@@ -1,36 +1,23 @@
--- INIT DATABASE : VirtualDiary
-
-CREATE DATABASE IF NOT EXISTS virtualdiary_db;
-USE virtualdiary_db;
-
--- TABLE users
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS authors (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
+    nickname VARCHAR(50) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    nickname VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- TABLE diary_pages
-CREATE TABLE diary_pages (
+CREATE TABLE IF NOT EXISTS diary_pages (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    author_id INT,
     content TEXT NOT NULL,
-    page_style ENUM('classic', 'dark', 'pastel') DEFAULT 'classic',
+    page_style ENUM('classic', 'midnight', 'lavender') DEFAULT 'classic', -- 3 Tema Kertas
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL,
-    CONSTRAINT fk_user_diary
-        FOREIGN KEY (user_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE
+    FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE CASCADE
 );
 
--- DUMMY DATA
-INSERT INTO users (username, password, nickname) VALUES
-('admin', 'admin123', 'Admin'),
-('akmal', 'akmal123', 'Akmal');
+-- Data Awal (Opsional untuk Testing)
+INSERT INTO authors (nickname, username, password) VALUES ('Penulis Gabut', 'user1', 'pass123');
+INSERT INTO diary_pages (author_id, content, page_style) VALUES (1, 'Hari ini aku belajar Docker...', 'classic');
 
-INSERT INTO diary_pages (user_id, content, page_style) VALUES
-(1, 'Selamat datang di VirtualDiary', 'classic'),
-(2, 'Diary pertamaku', 'pastel');
+INSERT INTO authors (nickname, username, password) VALUES ('Akmal', 'akmal', 'akmal123');
+INSERT INTO diary_pages (author_id, content, page_style) VALUES (2, 'Diary Pertamaku', 'midnight');
