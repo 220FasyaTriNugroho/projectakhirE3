@@ -16,8 +16,5 @@ CREATE TABLE IF NOT EXISTS diary_pages (
 );
 
 -- Data Awal (Opsional untuk Testing)
-INSERT INTO authors (nickname, username, password) VALUES ('Penulis Gabut', 'user1', 'pass123');
-INSERT INTO diary_pages (author_id, content, page_style) VALUES (1, 'Hari ini aku belajar Docker...', 'classic');
-
 INSERT INTO authors (nickname, username, password) VALUES ('Akmal', 'akmal', 'akmal123');
-INSERT INTO diary_pages (author_id, content, page_style) VALUES (7, 'Diary Pertamaku', 'midnight');
+INSERT INTO diary_pages (author_id, content, page_style) VALUES (1, 'Diary Pertamaku', 'midnight');
